@@ -11,7 +11,7 @@
 #define ROWS 8
 #define COLS 8
 
-//horas gastas no codigo: 10;
+//horas gastas no codigo: 11;
 //total de canecas de cafe: 9; << eu odeio cafe...
 
 struct MatrixStruct {
@@ -122,13 +122,7 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
             }
             mat->matrix[robotPosition.x][robotPosition.y] = '@';
             printMatrix(mat);
-
-           
-#ifdef _WIN32
             Sleep(2000);
-#else
-            sleep(2); 
-#endif
         }
 
         while (robotPosition.x != nextX) {
@@ -142,12 +136,8 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
             }
             mat->matrix[robotPosition.x][robotPosition.y] = '@';
             printMatrix(mat);
-
-#ifdef _WIN32
             Sleep(2000);
-#else
-            sleep(2);
-#endif
+
         }
     }
 
@@ -170,9 +160,36 @@ void actualPosition(MatrixStruct* mat)
         }
     }
 }
-void returnToPosition(MatrixStruct* mat, int startX, int startY, int endX, int endY) {
+void returnToPosition(MatrixStruct* mat, int startX, int startY, int lastPositionX, int lastPositionY) {
+    ActualPosition robotPosition;
+    robotPosition.x = lastPositionX;
+    robotPosition.y = lastPositionY;
 
-}
+    while (robotPosition.x != startX || robotPosition.y != startY) {
+        mat->matrix[robotPosition.x][robotPosition.y] = '-';
+        if (robotPosition.x < startX) {
+            robotPosition.x++;
+        }
+        else if (robotPosition.x > startX) {
+            robotPosition.x--;
+        }
+        if (robotPosition.y < startY) {
+            robotPosition.y++;
+        }
+        else if (robotPosition.y > startY) {
+            robotPosition.y--;
+        }
+        mat->matrix[robotPosition.x][robotPosition.y] = '@';
+        printMatrix(mat);
+
+        Sleep(2000);
+
+    }
+
+    mat->matrix[startX][startY] = '-';
+
+    printMatrix(mat);
+    }
 
 int main() {
     MatrixStruct mat;
@@ -213,7 +230,10 @@ int main() {
             printf("Coordenadas fora dos limites da matriz.\n");
         }
     }
-
+    int v, h;
+    printf("qual foi as suas ultimas cordenadas?: ");
+    scanf_s("%d", &v);
+    scanf_s("%d", &h);
     printMatrix(&mat);
 
     matrixDryMap(&mat, dirtCells, &numDirt);
@@ -226,6 +246,7 @@ int main() {
     actualPosition(&mat);
     printf("Matriz apos limpeza:\n");
     printMatrix(&mat);
+    returnToPosition(&mat, startX, startY, v, h);
 
 
     return 0;
