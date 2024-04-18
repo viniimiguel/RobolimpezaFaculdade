@@ -12,7 +12,7 @@
 #define COLS 8
 
 //horas gastas no codigo: 7;
-//total de canecas de café: 8; << eu odeio café...
+//total de canecas de cafe: 8; << eu odeio cafe...
 
 struct MatrixStruct {
     char matrix[ROWS][COLS];
@@ -104,11 +104,19 @@ void matrixDryMap(MatrixStruct* mat, DirtCell* dirtCells, int* numDirt) {
 
 void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
     for (int i = 0; i < numDirt; i++) {
-        int x = dirtCells[i].x;
-        int y = dirtCells[i].y;
-        mat->matrix[x][y] = '@';
-        printMatrix(mat);
-        mat->matrix[x][y] = '-';
+        for(int j = 0; j < numDirt; j++)
+        {
+            int x = dirtCells[i].x;
+            int y = dirtCells[j].y;
+            if(mat->matrix[i][j] == '#')
+            {
+                mat->matrix[i][j] == '@';
+                
+            }
+            printMatrix(mat);
+            mat->matrix[x][y] = '-';
+        }
+        
 #ifdef _WIN32
         Sleep(2000);
 #else
@@ -120,17 +128,17 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
 
 void actualPosition(MatrixStruct* mat)
 {
-	for(int i = 0;i < ROWS; i++)
-	{
-		for(int j = 0; j < COLS; j++)
-		{
-			if(mat->matrix[i][j] == '@')
-			{
+    for (int i = 0; i < ROWS; i++)
+    {
+        for (int j = 0; j < COLS; j++)
+        {
+            if (mat->matrix[i][j] == '@')
+            {
                 printf("o robo se encontra em (%d, %d)", i, j);
                 break;
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 void returnToStart(MatrixStruct* mat, ActualPosition* actualposition)
@@ -171,6 +179,8 @@ int main() {
 
         if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
             addDirt(&mat, x, y);
+            printMatrix(&mat);
+            
         }
         else {
             printf("Coordenadas fora dos limites da matriz.\n");
