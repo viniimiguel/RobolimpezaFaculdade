@@ -1,14 +1,39 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
 
 #define ROWS 8
 #define COLS 8
+
+//horas gastas no codigo: 7;
+//total de canecas de café: 8; << eu odeio café...
 
 struct MatrixStruct {
     char matrix[ROWS][COLS];
 };
 
 typedef struct MatrixStruct MatrixStruct;
+
+struct DirtCell {
+    int x;
+    int y;
+};
+
+typedef struct DirtCell DirtCell;
+
+struct ActualPosition
+{
+    int x;
+    int y;
+};
+
+typedef struct ActualPosition ActualPosition;
 
 void printMatrix(MatrixStruct* mat) {
     printf("Matriz 8x8:\n");
@@ -19,17 +44,17 @@ void printMatrix(MatrixStruct* mat) {
         printf("\n");
     }
 }
-void execStartPoint(MatrixStruct* mat, int startX, int startY)
-{
+
+void execStartPoint(MatrixStruct* mat, int startX, int startY) {
     mat->matrix[startX][startY] = 'E';
 }
+
 int addStartPointX() {
     int startX;
     bool control = false;
-    while (!control)
-    {
-        printf("qual sera o ponto de partida?\n");
-        printf("coluna: ");
+    while (!control) {
+        printf("Qual sera o ponto de partida?\n");
+        printf("Coluna: ");
         scanf_s("%d", &startX);
         if (startX >= 0 && startX < ROWS) {
             break;
@@ -46,10 +71,9 @@ int addStartPointX() {
 int addStartPointY() {
     int startY;
     bool control = false;
-    while(!control)
-    {
-	    printf("fileira: ");
-	    scanf_s("%d", &startY);
+    while (!control) {
+        printf("Fileira: ");
+        scanf_s("%d", &startY);
         if (startY >= 0 && startY < ROWS) {
             break;
         }
@@ -60,14 +84,65 @@ int addStartPointY() {
 
     return startY;
 }
+
 void addDirt(MatrixStruct* mat, int x, int y) {
     mat->matrix[x][y] = '#';
+}
+
+void matrixDryMap(MatrixStruct* mat, DirtCell* dirtCells, int* numDirt) {
+    *numDirt = 0;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (mat->matrix[i][j] == '#') {
+                dirtCells[*numDirt].x = i;
+                dirtCells[*numDirt].y = j;
+                (*numDirt)++;
+            }
+        }
+    }
+}
+
+void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
+    for (int i = 0; i < numDirt; i++) {
+        int x = dirtCells[i].x;
+        int y = dirtCells[i].y;
+        mat->matrix[x][y] = '@';
+        printMatrix(mat);
+        mat->matrix[x][y] = '-';
+#ifdef _WIN32
+        Sleep(2000);
+#else
+        sleep(1);
+#endif
+    }
+}
+
+
+void actualPosition(MatrixStruct* mat)
+{
+	for(int i = 0;i < ROWS; i++)
+	{
+		for(int j = 0; j < COLS; j++)
+		{
+			if(mat->matrix[i][j] == '@')
+			{
+                printf("o robo se encontra em (%d, %d)", i, j);
+                break;
+			}
+		}
+	}
+}
+
+void returnToStart(MatrixStruct* mat, ActualPosition* actualposition)
+{
+
 }
 
 
 int main() {
     MatrixStruct mat;
-
+    DirtCell dirtCells[ROWS * COLS];
+    int numDirt = 0;
 
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -75,26 +150,24 @@ int main() {
         }
     }
 
-
     int startX = addStartPointX();
     int startY = addStartPointY();
 
     execStartPoint(&mat, startX, startY);
 
-
     printf("Caso nao queira mais colocar sujeira, digite (-1, -1)\n");
 
     while (true) {
         int x, y;
-        printf("coluna: ");
+        printf("Coluna: ");
         scanf_s("%d", &x);
-        printf("fileira: ");
+        printf("Fileira: ");
         scanf_s("%d", &y);
+        printf("---------------\n");
 
         if (x == -1 || y == -1) {
             break;
         }
-
 
         if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
             addDirt(&mat, x, y);
@@ -105,6 +178,18 @@ int main() {
     }
 
     printMatrix(&mat);
+
+    matrixDryMap(&mat, dirtCells, &numDirt);
+    printf("Posicoes com sujeira:\n");
+    for (int i = 0; i < numDirt; i++) {
+        printf("(%d, %d)\n", dirtCells[i].x, dirtCells[i].y);
+    }
+
+    cleanDirt(&mat, dirtCells, numDirt);
+    actualPosition(&mat);
+    printf("Matriz apos limpeza:\n");
+    printMatrix(&mat);
+
 
     return 0;
 }
