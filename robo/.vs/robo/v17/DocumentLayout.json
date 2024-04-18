@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\vinicius\\Desktop\\OpenCoding\\robo\\robo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{289F5445-4095-44F7-B2A3-3F1DD814116A}|robo\\robo.vcxproj|C:\\Users\\vinicius\\Desktop\\OpenCoding\\robo\\robo\\robo\\robo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{289F5445-4095-44F7-B2A3-3F1DD814116A}|robo\\robo.vcxproj|solutionrelative:robo\\robo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "robo.cpp",
+              "DocumentMoniker": "C:\\Users\\vinicius\\Desktop\\OpenCoding\\robo\\robo\\robo\\robo.cpp",
+              "RelativeDocumentMoniker": "robo\\robo.cpp",
+              "ToolTip": "C:\\Users\\vinicius\\Desktop\\OpenCoding\\robo\\robo\\robo\\robo.cpp",
+              "RelativeToolTip": "robo\\robo.cpp",
+              "ViewState": "AQIAABUAAAAAAAAAAAAmwCYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-04-18T02:55:43.757Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
