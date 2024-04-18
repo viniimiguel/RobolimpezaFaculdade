@@ -26,18 +26,18 @@ void execStartPoint(MatrixStruct* mat, int startX, int startY)
 int addStartPointX() {
     int startX;
     bool control = false;
-    while(!control)
+    while (!control)
     {
-	    printf("qual sera o ponto de partida?\n");
-	    printf("coluna: ");
-	    scanf_s("%d", &startX);
+        printf("qual sera o ponto de partida?\n");
+        printf("coluna: ");
+        scanf_s("%d", &startX);
         if (startX >= 0 && startX < ROWS) {
             break;
         }
         else {
             printf("Coordenadas fora dos limites da matriz.\n");
         }
-	    
+
     }
 
     return startX;
@@ -45,8 +45,18 @@ int addStartPointX() {
 
 int addStartPointY() {
     int startY;
-    printf("fileira: ");
-    scanf_s("%d", &startY);
+    bool control = false;
+    while(!control)
+    {
+	    printf("fileira: ");
+	    scanf_s("%d", &startY);
+        if (startY >= 0 && startY < ROWS) {
+            break;
+        }
+        else {
+            printf("Coordenadas fora dos limites da matriz.\n");
+        }
+    }
 
     return startY;
 }
@@ -64,8 +74,8 @@ int main() {
             mat.matrix[i][j] = '-';
         }
     }
-    
-    
+
+
     int startX = addStartPointX();
     int startY = addStartPointY();
 
@@ -85,7 +95,7 @@ int main() {
             break;
         }
 
-        
+
         if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
             addDirt(&mat, x, y);
         }
