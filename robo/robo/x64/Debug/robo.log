@@ -1,5 +1,4 @@
 ﻿  robo.c
-C:\Users\vinicius\Desktop\OpenCoding\robo\robo\robo\robo.c(113,35): warning C4553: '==': o resultado da expressão não usado; você pretendia que fosse '='?
   robo.vcxproj -> C:\Users\vinicius\Desktop\OpenCoding\robo\robo\x64\Debug\robo.exe
   'pwsh.exe' não é reconhecido como um comando interno
   ou externo, um programa operável ou um arquivo em lotes.

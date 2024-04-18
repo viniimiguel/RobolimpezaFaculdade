@@ -11,8 +11,8 @@
 #define ROWS 8
 #define COLS 8
 
-//horas gastas no codigo: 7;
-//total de canecas de cafe: 8; << eu odeio cafe...
+//horas gastas no codigo: 10;
+//total de canecas de cafe: 9; << eu odeio cafe...
 
 struct MatrixStruct {
     char matrix[ROWS][COLS];
@@ -103,26 +103,56 @@ void matrixDryMap(MatrixStruct* mat, DirtCell* dirtCells, int* numDirt) {
 }
 
 void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
+    ActualPosition robotPosition;
+    robotPosition.x = dirtCells[0].x;
+    robotPosition.y = dirtCells[0].y;
+
     for (int i = 0; i < numDirt; i++) {
-        for(int j = 0; j < numDirt; j++)
-        {
-            int x = dirtCells[i].x;
-            int y = dirtCells[j].y;
-            if(mat->matrix[i][j] == '#')
-            {
-                mat->matrix[i][j] == '@';
-                
-            }
+        int nextX = dirtCells[i].x;
+        int nextY = dirtCells[i].y;
+
+        while (robotPosition.y != nextY) {
+            mat->matrix[robotPosition.x][robotPosition.y] = '-';
             printMatrix(mat);
-            mat->matrix[x][y] = '-';
-        }
-        
+            if (robotPosition.y < nextY) {
+                robotPosition.y++;
+            }
+            else {
+                robotPosition.y--;
+            }
+            mat->matrix[robotPosition.x][robotPosition.y] = '@';
+            printMatrix(mat);
+
+           
 #ifdef _WIN32
-        Sleep(2000);
+            Sleep(2000);
 #else
-        sleep(1);
+            sleep(2); 
 #endif
+        }
+
+        while (robotPosition.x != nextX) {
+            mat->matrix[robotPosition.x][robotPosition.y] = '-';
+            printMatrix(mat);
+            if (robotPosition.x < nextX) {
+                robotPosition.x++;
+            }
+            else {
+                robotPosition.x--;
+            }
+            mat->matrix[robotPosition.x][robotPosition.y] = '@';
+            printMatrix(mat);
+
+#ifdef _WIN32
+            Sleep(2000);
+#else
+            sleep(2);
+#endif
+        }
     }
+
+    mat->matrix[robotPosition.x][robotPosition.y] = '-';
+    printMatrix(mat);
 }
 
 
@@ -140,12 +170,9 @@ void actualPosition(MatrixStruct* mat)
         }
     }
 }
-
-void returnToStart(MatrixStruct* mat, ActualPosition* actualposition)
-{
+void returnToPosition(MatrixStruct* mat, int startX, int startY, int endX, int endY) {
 
 }
-
 
 int main() {
     MatrixStruct mat;
@@ -180,7 +207,7 @@ int main() {
         if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
             addDirt(&mat, x, y);
             printMatrix(&mat);
-            
+
         }
         else {
             printf("Coordenadas fora dos limites da matriz.\n");
