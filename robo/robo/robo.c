@@ -19,10 +19,41 @@ void printMatrix(MatrixStruct* mat) {
         printf("\n");
     }
 }
+void execStartPoint(MatrixStruct* mat, int startX, int startY)
+{
+    mat->matrix[startX][startY] = 'E';
+}
+int addStartPointX() {
+    int startX;
+    bool control = false;
+    while(!control)
+    {
+	    printf("qual sera o ponto de partida?\n");
+	    printf("coluna: ");
+	    scanf_s("%d", &startX);
+        if (startX >= 0 && startX < ROWS) {
+            break;
+        }
+        else {
+            printf("Coordenadas fora dos limites da matriz.\n");
+        }
+	    
+    }
 
+    return startX;
+}
+
+int addStartPointY() {
+    int startY;
+    printf("fileira: ");
+    scanf_s("%d", &startY);
+
+    return startY;
+}
 void addDirt(MatrixStruct* mat, int x, int y) {
     mat->matrix[x][y] = '#';
 }
+
 
 int main() {
     MatrixStruct mat;
@@ -33,14 +64,21 @@ int main() {
             mat.matrix[i][j] = '-';
         }
     }
+    
+    
+    int startX = addStartPointX();
+    int startY = addStartPointY();
 
-    printf("Caso não queira mais colocar sujeira, digite (-1, -1)\n");
+    execStartPoint(&mat, startX, startY);
+
+
+    printf("Caso nao queira mais colocar sujeira, digite (-1, -1)\n");
 
     while (true) {
         int x, y;
-        printf("Fileira: ");
+        printf("coluna: ");
         scanf_s("%d", &x);
-        printf("Coluna: ");
+        printf("fileira: ");
         scanf_s("%d", &y);
 
         if (x == -1 || y == -1) {
