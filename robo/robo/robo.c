@@ -102,10 +102,10 @@ void matrixDryMap(MatrixStruct* mat, DirtCell* dirtCells, int* numDirt) {
     }
 }
 
-void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
+void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, int startY) {
     ActualPosition robotPosition;
-    robotPosition.x = dirtCells[0].x;
-    robotPosition.y = dirtCells[0].y;
+    robotPosition.x = startX+1;
+    robotPosition.y = startY;
 
     for (int i = 0; i < numDirt; i++) {
         int nextX = dirtCells[i].x;
@@ -144,6 +144,7 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt) {
     mat->matrix[robotPosition.x][robotPosition.y] = '-';
     printMatrix(mat);
 }
+
 
 
 void actualPosition(MatrixStruct* mat)
@@ -217,11 +218,15 @@ int main() {
         scanf_s("%d", &y);
         printf("---------------\n");
 
+        if(x == startX && y == startY)
+        {
+            printf("voce nao pode sujar a estacao");
+        }
         if (x == -1 || y == -1) {
             break;
         }
 
-        if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
+        if (x >= 0 && x < ROWS && y >= 0 && y < COLS && x != startX && y !=startY) {
             addDirt(&mat, x, y);
             printMatrix(&mat);
 
@@ -242,7 +247,7 @@ int main() {
         printf("(%d, %d)\n", dirtCells[i].x, dirtCells[i].y);
     }
 
-    cleanDirt(&mat, dirtCells, numDirt);
+    cleanDirt(&mat, dirtCells, numDirt, startX, startY);
     actualPosition(&mat);
     printf("Matriz apos limpeza:\n");
     printMatrix(&mat);
