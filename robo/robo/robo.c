@@ -11,8 +11,8 @@
 #define ROWS 8
 #define COLS 8
 
-//horas gastas no codigo: 13 dia 2;
-//total de canecas de cafe: 9; << eu odeio cafe...
+// horas no codigo: 14; dia 2
+// canecas de cafe 9; << odeio cafe...
 
 struct MatrixStruct {
     char matrix[ROWS][COLS];
@@ -139,7 +139,7 @@ ActualPosition pop(Stack* stack) {
 
 void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, int startY) {
     ActualPosition robotPosition;
-    robotPosition.x = startX+1;
+    robotPosition.x = startX;
     robotPosition.y = startY;
 
     Stack path;
@@ -149,32 +149,52 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, 
         int nextX = dirtCells[i].x;
         int nextY = dirtCells[i].y;
 
-        while (robotPosition.y != nextY) {
-            mat->matrix[robotPosition.x][robotPosition.y] = '-';
-            push(&path, robotPosition);
-            if (robotPosition.y < nextY) {
-                robotPosition.y++;
-            }
-            else {
-                robotPosition.y--;
-            }
-            mat->matrix[robotPosition.x][robotPosition.y] = '@';
-            printMatrix(mat);
-            Sleep(2000);
-        }
+        while (robotPosition.x != nextX || robotPosition.y != nextY) {
+            if (robotPosition.x != nextX && robotPosition.y != nextY) {
+                if (robotPosition.x < nextX) {
+                    robotPosition.x++;
+                }
+                else if (robotPosition.x > nextX) {
+                    robotPosition.x--;
+                }
 
-        while (robotPosition.x != nextX) {
-            mat->matrix[robotPosition.x][robotPosition.y] = '-';
-            push(&path, robotPosition);
-            if (robotPosition.x < nextX) {
-                robotPosition.x++;
+                mat->matrix[robotPosition.x][robotPosition.y] = '-';
+                push(&path, robotPosition);
+                mat->matrix[robotPosition.x][robotPosition.y] = '@';
+                printMatrix(mat);
+                Sleep(2000);
             }
             else {
-                robotPosition.x--;
+                while (robotPosition.y != nextY) {
+                    mat->matrix[robotPosition.x][robotPosition.y] = '-';
+                    push(&path, robotPosition);
+                    if (robotPosition.y < nextY) {
+                        robotPosition.y++;
+                    }
+                    else {
+                        robotPosition.y--;
+                    }
+                    mat->matrix[robotPosition.x][robotPosition.y] = '@';
+                    printMatrix(mat);
+                    Sleep(2000);
+                    mat->matrix[robotPosition.x][robotPosition.y] = '-';
+                    printMatrix(mat);
+                }
+
+                while (robotPosition.x != nextX) {
+                    mat->matrix[robotPosition.x][robotPosition.y] = '-';
+                    push(&path, robotPosition);
+                    if (robotPosition.x < nextX) {
+                        robotPosition.x++;
+                    }
+                    else {
+                        robotPosition.x--;
+                    }
+                    mat->matrix[robotPosition.x][robotPosition.y] = '@';
+                    printMatrix(mat);
+                    Sleep(2000);
+                }
             }
-            mat->matrix[robotPosition.x][robotPosition.y] = '@';
-            printMatrix(mat);
-            Sleep(2000);
         }
     }
 
@@ -200,8 +220,8 @@ void actualPosition(MatrixStruct* mat)
         {
             if (mat->matrix[i][j] == '@')
             {
-                printf("o robo se encontra em (%d, %d)", i, j);
-                break;
+                printf("O robo se encontra em (%d, %d)\n", i, j);
+                return;
             }
         }
     }
@@ -213,7 +233,7 @@ void returnToPosition(MatrixStruct* mat, int startX, int startY, int lastPositio
     robotPosition.y = lastPositionY;
 
     while (robotPosition.x != startX || robotPosition.y != startY) {
-        mat->matrix[robotPosition.x][robotPosition.y] = '-';
+        mat->matrix[robotPosition.x][robotPosition.y] = '@';
         if (robotPosition.x < startX) {
             robotPosition.x++;
         }
@@ -226,13 +246,13 @@ void returnToPosition(MatrixStruct* mat, int startX, int startY, int lastPositio
         else if (robotPosition.y > startY) {
             robotPosition.y--;
         }
-        mat->matrix[robotPosition.x][robotPosition.y] = '@';
+        mat->matrix[robotPosition.x][robotPosition.y] = '-';
         printMatrix(mat);
 
-        Sleep(2000);
+        Sleep(1000);
     }
 
-    mat->matrix[startX][startY] = '-';
+    mat->matrix[startX][startY] = '@';
 
     printMatrix(mat);
 }
@@ -265,7 +285,7 @@ int main() {
 
         if (x == startX && y == startY)
         {
-            printf("voce nao pode sujar a estacao");
+            printf("Voce nao pode sujar a estacao.\n");
         }
         if (x == -1 || y == -1) {
             break;
@@ -281,13 +301,13 @@ int main() {
     }
 
     int v, h;
-    printf("Qual foi a sua última posicao?: ");
+    printf("Qual foi a sua ultima posicao?: ");
     scanf_s("%d", &v);
     scanf_s("%d", &h);
     printMatrix(&mat);
 
     matrixDryMap(&mat, dirtCells, &numDirt);
-    printf("Posicoess com sujeira:\n");
+    printf("Posicoes com sujeira:\n");
     for (int i = 0; i < numDirt; i++) {
         printf("(%d, %d)\n", dirtCells[i].x, dirtCells[i].y);
     }
