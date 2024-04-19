@@ -11,7 +11,7 @@
 #define ROWS 8
 #define COLS 8
 
-//horas gastas no codigo: 11;
+//horas gastas no codigo: 13 dia 2;
 //total de canecas de cafe: 9; << eu odeio cafe...
 
 struct MatrixStruct {
@@ -102,10 +102,48 @@ void matrixDryMap(MatrixStruct* mat, DirtCell* dirtCells, int* numDirt) {
     }
 }
 
+#define MAX_SIZE ROWS * COLS
+
+struct Stack {
+    ActualPosition items[MAX_SIZE];
+    int top;
+};
+
+typedef struct Stack Stack;
+
+void initializeStack(Stack* stack) {
+    stack->top = -1;
+}
+
+bool isEmpty(Stack* stack) {
+    return stack->top == -1;
+}
+
+bool isFull(Stack* stack) {
+    return stack->top == MAX_SIZE - 1;
+}
+
+void push(Stack* stack, ActualPosition item) {
+    if (!isFull(stack)) {
+        stack->items[++stack->top] = item;
+    }
+}
+
+ActualPosition pop(Stack* stack) {
+    ActualPosition item = { -1, -1 };
+    if (!isEmpty(stack)) {
+        item = stack->items[stack->top--];
+    }
+    return item;
+}
+
 void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, int startY) {
     ActualPosition robotPosition;
     robotPosition.x = startX+1;
     robotPosition.y = startY;
+
+    Stack path;
+    initializeStack(&path);
 
     for (int i = 0; i < numDirt; i++) {
         int nextX = dirtCells[i].x;
@@ -113,7 +151,7 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, 
 
         while (robotPosition.y != nextY) {
             mat->matrix[robotPosition.x][robotPosition.y] = '-';
-            printMatrix(mat);
+            push(&path, robotPosition);
             if (robotPosition.y < nextY) {
                 robotPosition.y++;
             }
@@ -127,7 +165,7 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, 
 
         while (robotPosition.x != nextX) {
             mat->matrix[robotPosition.x][robotPosition.y] = '-';
-            printMatrix(mat);
+            push(&path, robotPosition);
             if (robotPosition.x < nextX) {
                 robotPosition.x++;
             }
@@ -137,15 +175,22 @@ void cleanDirt(MatrixStruct* mat, DirtCell* dirtCells, int numDirt, int startX, 
             mat->matrix[robotPosition.x][robotPosition.y] = '@';
             printMatrix(mat);
             Sleep(2000);
-
         }
     }
 
     mat->matrix[robotPosition.x][robotPosition.y] = '-';
     printMatrix(mat);
+
+    while (!isEmpty(&path)) {
+        ActualPosition prevPosition = pop(&path);
+        mat->matrix[robotPosition.x][robotPosition.y] = '-';
+        robotPosition.x = prevPosition.x;
+        robotPosition.y = prevPosition.y;
+        mat->matrix[robotPosition.x][robotPosition.y] = '@';
+        printMatrix(mat);
+        Sleep(2000);
+    }
 }
-
-
 
 void actualPosition(MatrixStruct* mat)
 {
@@ -161,6 +206,7 @@ void actualPosition(MatrixStruct* mat)
         }
     }
 }
+
 void returnToPosition(MatrixStruct* mat, int startX, int startY, int lastPositionX, int lastPositionY) {
     ActualPosition robotPosition;
     robotPosition.x = lastPositionX;
@@ -184,13 +230,12 @@ void returnToPosition(MatrixStruct* mat, int startX, int startY, int lastPositio
         printMatrix(mat);
 
         Sleep(2000);
-
     }
 
     mat->matrix[startX][startY] = '-';
 
     printMatrix(mat);
-    }
+}
 
 int main() {
     MatrixStruct mat;
@@ -218,7 +263,7 @@ int main() {
         scanf_s("%d", &y);
         printf("---------------\n");
 
-        if(x == startX && y == startY)
+        if (x == startX && y == startY)
         {
             printf("voce nao pode sujar a estacao");
         }
@@ -226,23 +271,23 @@ int main() {
             break;
         }
 
-        if (x >= 0 && x < ROWS && y >= 0 && y < COLS && x != startX && y !=startY) {
+        if (x >= 0 && x < ROWS && y >= 0 && y < COLS && x != startX && y != startY) {
             addDirt(&mat, x, y);
             printMatrix(&mat);
-
         }
         else {
             printf("Coordenadas fora dos limites da matriz.\n");
         }
     }
+
     int v, h;
-    printf("qual foi as suas ultimas cordenadas?: ");
+    printf("Qual foi a sua última posicao?: ");
     scanf_s("%d", &v);
     scanf_s("%d", &h);
     printMatrix(&mat);
 
     matrixDryMap(&mat, dirtCells, &numDirt);
-    printf("Posicoes com sujeira:\n");
+    printf("Posicoess com sujeira:\n");
     for (int i = 0; i < numDirt; i++) {
         printf("(%d, %d)\n", dirtCells[i].x, dirtCells[i].y);
     }
@@ -252,7 +297,6 @@ int main() {
     printf("Matriz apos limpeza:\n");
     printMatrix(&mat);
     returnToPosition(&mat, startX, startY, v, h);
-
 
     return 0;
 }
