@@ -1,5 +1,2 @@
 ﻿  robo.c
-C:\Users\vinicius\Desktop\OpenCoding\robo\robo\robo\robo.c(43,1): warning C4716: 'robotEstation': deve retornar um valor
-  robo.vcxproj -> C:\Users\vinicius\Desktop\OpenCoding\robo\robo\x64\Debug\robo.exe
-  'pwsh.exe' não é reconhecido como um comando interno
-  ou externo, um programa operável ou um arquivo em lotes.
+C:\Users\vinicius\Desktop\OpenCoding\robo\robo\robo\robo.c(88,19): error C2107: índice inválido, indireção não permitida
