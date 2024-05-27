@@ -5,8 +5,8 @@
 #define ROWS 8
 #define COLS 8
 
-int x, y; // Coordenadas da estação
-int dx, dy; // Coordenadas temporárias para a sujeira
+int x, y;
+int dx, dy;
 
 char matrix[ROWS][COLS] = {
     {'-', '-', '-', '-', '-', '-', '-', '-'},
@@ -29,9 +29,9 @@ void printMatrix() {
 }
 
 void robotEstation() {
-    printf("Digite onde você quer a estação no eixo horizontal (0 a 7): ");
+    printf("Digite onde você quer a estaçao no eixo horizontal (0 a 7): ");
     scanf_s("%d", &x);
-    printf("Digite onde você quer a estação no eixo vertical (0 a 7): ");
+    printf("Digite onde você quer a estaçao no eixo vertical (0 a 7): ");
     scanf_s("%d", &y);
     if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
         matrix[y][x] = 'E';
@@ -45,9 +45,9 @@ void robotEstation() {
 void dirtyMatrix() {
     while (true) {
         int exit;
-        printf("Digite onde você quer colocar a sujeira (0 a 7) (eixo horizontal): ");
+        printf("Digite onde voce quer colocar a sujeira (0 a 7) (eixo horizontal): ");
         scanf_s("%d", &dx);
-        printf("Digite onde você quer colocar a sujeira (0 a 7) (eixo vertical): ");
+        printf("Digite onde voce quer colocar a sujeira (0 a 7) (eixo vertical): ");
         scanf_s("%d", &dy);
         printf("Quer sair? Digite (-1) para SIM ou (0) para NÃO: ");
         scanf_s("%d", &exit);
@@ -62,11 +62,11 @@ void dirtyMatrix() {
                 printMatrix();
             }
             else {
-                printf("A coordenada é uma estação, digite novamente em outra coordenada.");
+                printf("A coordenada e uma estaçao, digite novamente em outra coordenada.\n");
             }
         }
         else {
-            printf("Coordenada inválida, tente novamente!");
+            printf("Coordenada invalida, tente novamente!\n");
         }
     }
 }
@@ -76,31 +76,40 @@ bool moveRobot(int* rx, int* ry) {
     for (int d = 0; d < 4; d++) {
         int nx = *rx + directions[d][0];
         int ny = *ry + directions[d][1];
-        if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && matrix[ny][nx] == '#') {
-            matrix[*ry][*rx] = '-';
+        if (nx >= 0 && nx < ROWS && ny >= 0 && ny < COLS && (matrix[ny][nx] == '#' || matrix[ny][nx] == 'E')) {
+            if (matrix[*ry][*rx] != 'E') {
+                matrix[*ry][*rx] = ' ';
+            }
             *rx = nx;
             *ry = ny;
+            if (matrix[ny][nx] == '#') {
+                matrix[ny][nx] = '-';
+            }
             return true;
         }
     }
-    return false;
+    return false; 
 }
 
 void cleanDirty() {
     int rx = x, ry = y; 
-    matrix[ry][rx] = 'R';
     system("cls");
     printMatrix();
 
     while (true) {
-        Sleep(1000); 
+        Sleep(1000);
         if (!moveRobot(&rx, &ry)) {
             break; 
+        }
+        matrix[ry][rx] = 'R'; 
+        if (rx != x || ry != y) {
+            matrix[y][x] = 'E';
         }
         system("cls");
         printMatrix();
     }
-    matrix[ry][rx] = 'E';
+
+    matrix[y][x] = 'E';
     system("cls");
     printMatrix();
 }
